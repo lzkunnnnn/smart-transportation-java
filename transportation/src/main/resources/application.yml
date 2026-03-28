@@ -5,6 +5,16 @@ spring:
     password: 1234
     hikari:
       maximum-pool-size: 10
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  sql:
+    init:
+      mode: never
 logging:
   level:
     sql: debug

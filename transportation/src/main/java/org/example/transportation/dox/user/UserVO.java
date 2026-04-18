@@ -20,4 +20,5 @@ public class UserVO implements Serializable {
     private Integer status;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
+    private String userType; // 用户类型：user 或 visitor
 }

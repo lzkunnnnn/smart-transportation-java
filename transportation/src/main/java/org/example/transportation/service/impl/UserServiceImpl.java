@@ -2,10 +2,14 @@ package org.example.transportation.service.impl;
 
 import org.example.transportation.constant.MessageConstant;
 import org.example.transportation.dox.user.*;
+import org.example.transportation.dox.visitor.Visitor;
 import org.example.transportation.enumeration.RoleEnum;
 import org.example.transportation.enumeration.UserStatusEnum;
 import org.example.transportation.repository.UserRepository;
+import org.example.transportation.repository.VisitorRepository;
 import org.example.transportation.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.example.transportation.util.JwtClaimsConstant;
 import org.example.transportation.util.JwtUtil;
 import org.example.transportation.util.ThreadLocalUtil;
@@ -22,8 +26,13 @@ import java.util.concurrent.ConcurrentHashMap;
 @Service
 public class UserServiceImpl implements UserService {
 
+    private static final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
+
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private VisitorRepository visitorRepository;
 
     private static final Map<String, String> TOKEN_STORE = new ConcurrentHashMap<>();
 
@@ -224,11 +233,33 @@ public class UserServiceImpl implements UserService {
         Iterable<User> users = userRepository.findAll();
         List<UserVO> userVOList = new ArrayList<>();
 
+        // 添加普通用户
         for (User user : users) {
             UserVO userVO = new UserVO();
             BeanUtils.copyProperties(user, userVO);
+            userVO.setUserType("user");
             userVOList.add(userVO);
         }
+
+        // 添加群众用户
+        Iterable<Visitor> visitors = visitorRepository.findAll();
+        int visitorCount = 0;
+        for (Visitor visitor : visitors) {
+            UserVO userVO = new UserVO();
+            userVO.setId(visitor.getId());
+            userVO.setUsername(visitor.getUsername());
+            userVO.setPhone(visitor.getPhone());
+            userVO.setEmail(visitor.getEmail());
+            userVO.setAvatar(visitor.getAvatar());
+            userVO.setStatus(visitor.getStatus());
+            userVO.setCreateTime(visitor.getCreateTime());
+            userVO.setUpdateTime(visitor.getUpdateTime());
+            userVO.setUserType("visitor");
+            userVOList.add(userVO);
+            visitorCount++;
+        }
+        log.info("获取用户列表：普通管理员 {} 人，群众 {} 人，总计 {} 人",
+                ((List) users).size(), visitorCount, userVOList.size());
 
         return ResultVO.success(userVOList);
     }

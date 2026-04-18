@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.example.transportation.constant.MessageConstant;
 import org.example.transportation.service.impl.AdminServiceImpl;
 import org.example.transportation.service.impl.UserServiceImpl;
+import org.example.transportation.service.impl.VisitorServiceImpl;
 import org.example.transportation.util.JwtClaimsConstant;
 import org.example.transportation.util.JwtUtil;
 import org.example.transportation.util.ThreadLocalUtil;
@@ -29,13 +30,15 @@ public class LoginInterceptor implements HandlerInterceptor {
             "/api/user/login",
             "/api/user/register",
             "/api/admin/login",
+            "/api/visitor/login",
+            "/api/visitor/register",
             "/api/sensor/**",
             "/api/event/**",
-            "/api/relation/**"
-    );
+            "/api/relation/**");
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
+            throws Exception {
         if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
             response.setStatus(HttpServletResponse.SC_OK);
             return true;
@@ -73,6 +76,8 @@ public class LoginInterceptor implements HandlerInterceptor {
                 isValidToken = AdminServiceImpl.validateToken(token);
             } else if ("USER".equals(role)) {
                 isValidToken = UserServiceImpl.validateToken(token);
+            } else if ("VISITOR".equals(role)) {
+                isValidToken = VisitorServiceImpl.validateToken(token);
             }
 
             if (!isValidToken) {
@@ -89,7 +94,8 @@ public class LoginInterceptor implements HandlerInterceptor {
     }
 
     @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
+            throws Exception {
         ThreadLocalUtil.remove();
     }
 

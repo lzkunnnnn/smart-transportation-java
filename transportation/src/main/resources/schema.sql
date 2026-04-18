@@ -111,4 +111,18 @@ create table if not exists `admin`(
     update_time timestamp default current_timestamp on update current_timestamp
 );
 
+create table if not exists `visitor`(
+    id bigint auto_increment primary key,
+    username varchar(50) unique not null,
+    password varchar(100) not null,
+    phone varchar(20),
+    email varchar(50),
+    avatar varchar(255),
+    status tinyint default 0 comment '0:启用，1:禁用',
+    create_time timestamp default current_timestamp,
+    update_time timestamp default current_timestamp on update current_timestamp
+);
+
 INSERT INTO `admin` (username, password) VALUES ('admin', 'e10adc3949ba59abbe56e057f20f883e');
+
+INSERT INTO `visitor` (username, password, status) VALUES ('visitor', 'e10adc3949ba59abbe56e057f20f883e', 0);

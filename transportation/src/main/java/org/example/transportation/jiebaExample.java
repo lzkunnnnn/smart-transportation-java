@@ -12,4 +12,4 @@ public class jiebaExample {
             System.out.println(token.word);
         }
     }
-}
+} 

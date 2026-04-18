@@ -5,6 +5,7 @@ import org.example.transportation.dox.user.AdminLoginDTO;
 import org.example.transportation.dox.user.UserUpdateDTO;
 import org.example.transportation.service.AdminService;
 import org.example.transportation.service.UserService;
+import org.example.transportation.service.VisitorService;
 import org.example.transportation.vo.ResultVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
@@ -19,6 +20,9 @@ public class AdminController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private VisitorService visitorService;
 
     @PostMapping("/login")
     public ResultVO login(@RequestBody @Valid AdminLoginDTO adminLoginDTO, BindingResult bindingResult) {
@@ -57,6 +61,11 @@ public class AdminController {
     @PatchMapping("/user/status/{id}/{status}")
     public ResultVO updateUserStatus(@PathVariable("id") Long userId, @PathVariable("status") Integer status) {
         return userService.updateUserStatus(userId, status);
+    }
+
+    @PatchMapping("/visitor/status/{id}/{status}")
+    public ResultVO updateVisitorStatus(@PathVariable("id") Long visitorId, @PathVariable("status") Integer status) {
+        return visitorService.updateVisitorStatus(visitorId, status);
     }
 
     @DeleteMapping("/user/{id}")
